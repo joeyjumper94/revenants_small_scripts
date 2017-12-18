@@ -11,7 +11,7 @@ end
 
 local RestartFn=function(type,time,msg)
 	notifyAll(type,time,msg)
-	timer.Simple(2,function()
+	timer.Simple(time,function()
 		if #player.GetHumans()==0 and ShouldQuit then--is the server empty of human players?
 			RunConsoleCommand("_restart")--this actually closes the server
 		else
