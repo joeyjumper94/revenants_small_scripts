@@ -3,7 +3,7 @@ various small scripts that i made
 
 installation
 
-1.download and extract the zip file 
+1. download and extract the zip file 
 
 2. drop the folder into tha addons folder.
 
