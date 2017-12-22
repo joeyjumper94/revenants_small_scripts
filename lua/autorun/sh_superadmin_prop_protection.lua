@@ -1,13 +1,13 @@
 AddCSLuaFile()
 local FLAGS={FCVAR_ARCHIVE,FCAR_REPLICATED,FCVAR_SERVER_CAN_EXECUTE}
 local protection={
-	physgun=CreateConVar("superadmin_prop_protection_physgun","1",FLAGS,"enable protection from physgun"):GetBool()
-	toolgun=CreateConVar("superadmin_prop_protection_toolgun","1",FLAGS,"enable protection from toolgun"):GetBool()
-	property=CreateConVar("superadmin_prop_protection_property","1",FLAGS,"enable protection from Cmenu properties"):GetBool()
-	drive=CreateConVar("superadmin_prop_protection_drive","1",FLAGS,"enable protection from prop drive"):GetBool()
-	editvariable=CreateConVar("superadmin_prop_protection_editvariable","1",FLAGS,"enable protection from editvariable"):GetBool()
-	use=CreateConVar("superadmin_prop_protection_toolgun","0",FLAGS,"enable protection from player use( presing E)"):GetBool()
-	damage=CreateConVar("superadmin_prop_protection_toolgun","0",FLAGS,"enable protection from damage"):GetBool()
+	physgun=CreateConVar("superadmin_prop_protection_physgun","1",FLAGS,"enable protection from physgun"):GetBool(),
+	toolgun=CreateConVar("superadmin_prop_protection_toolgun","1",FLAGS,"enable protection from toolgun"):GetBool(),
+	property=CreateConVar("superadmin_prop_protection_property","1",FLAGS,"enable protection from Cmenu properties"):GetBool(),
+	drive=CreateConVar("superadmin_prop_protection_drive","1",FLAGS,"enable protection from prop drive"):GetBool(),
+	editvariable=CreateConVar("superadmin_prop_protection_editvariable","1",FLAGS,"enable protection from editvariable"):GetBool(),
+	use=CreateConVar("superadmin_prop_protection_toolgun","0",FLAGS,"enable protection from player use( presing E)"):GetBool(),
+	damage=CreateConVar("superadmin_prop_protection_toolgun","0",FLAGS,"enable protection from damage"):GetBool(),
 }
 hook.Add("PhysgunPickup","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Player,Entity)
 	if Player and Player:IsValid() and Player:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it

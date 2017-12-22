@@ -1,6 +1,6 @@
 AddCSLuaFile()
 local jailpos=Vector(0,0,0)
-local CATEGORY_NAME="JailSystem"
+local CATEGORY_NAME="Revenant's ulx extensions"
 
 concommand.Add("jailtest",function(ply,cmd,args)
 	print("jailpos=Vector("..jailpos.x..","..jailpos.y..","..jailpos.z..")")
@@ -40,7 +40,7 @@ timer.Create("jail_system_loader",5,5,function()
 				print(util.TableToJSON(data))
 				file.Write("ulx_jailroom_pos/"..game.GetMap()..".txt",util.TableToJSON(data))
 			else
-				print("since when could console's position be determined?")
+				print"you cannot use the position of someone who is are everywhere and nowhere at the same time"
 			end
 		end
 		local jailroomset=ulx.command(CATEGORY_NAME,"ulx jailroomset",ulx.jailroomset,"!jailroomset")
@@ -183,7 +183,7 @@ timer.Create("jail_system_loader",5,5,function()
 					end
 				end
 			end)
-			print("loaded ulx_jailsystem")
+			print"loaded ulx_jailsystem"
 			return
 		end
 
