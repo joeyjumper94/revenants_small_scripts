@@ -64,13 +64,13 @@ end)
 hook.Add("PlayerCanPickupWeapon","dictator_immunity_anti_abuse",function(ply,wep)
 	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then--is it a valid player?
 		if ply:getJobTable().mayor and timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune mayor?
-			if wep:CPPIGetOwner() and wep:CPPIGetOwner():IsValid() and wep:CPPIGetOwner():IsSuperAdmin() then-- a SuperAdmin gave a weapon
-				DarkRP.notify(ply,0,8,"you got a "..wep:GetClass().." as a gift from the gods")
-			elseif !table.concat({
-				table.concat(GAMEMODE.Config.AdminWeapons),--weapons that admins get
-				table.concat(GAMEMODE.Config.DefaultWeapons),--weapons that everyone gets
-			}):find(wep:GetClass()) then
-				if timer.TimeLeft(ply:SteamID64().."'s immunity")+0.1<immunity_time then
+			local class=wep:GetClass()
+
+			if wep:CPPIGetOwner() and wep:CPPIGetOwner():IsSuperAdmin() then-- a SuperAdmin gave a weapon
+				DarkRP.notify(ply,0,8,"you got a "..class.." as a gift from the gods")
+			elseif !table.HasValue(GAMEMODE.Config.AdminWeapons,class) and !table.HasValue(GAMEMODE.Config.DefaultWeapons,class) then
+			--is it not something that everyone gets and not something that admins get?
+				if timer.TimeLeft(ply:SteamID64().."'s immunity")<immunity_time then
 					DarkRP.notify(ply,1,8,[[you can't equip weapons while immune,
 you can end your immunity early by typing "endimmunity" into chat.
 you have ]]..math.Round(timer.TimeLeft(ply:SteamID64().."'s immunity"),2).." seconds left")

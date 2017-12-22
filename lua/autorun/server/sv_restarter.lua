@@ -26,7 +26,7 @@ hook.Add("Initialize","sv_restart_Initialize",function(ply)
 			timer.Simple(0.1,function()--delay for a tenth of a second
 				if (player.GetCount()) == 0 then--the server is now empty?
 					timer.Create("sv_restart_empty_server_timer",598,1,function()--after 10 minutes of being empty we execute a function
-						RestartFn(type,time,"server was restarted for being idle too long")
+						RestartFn(1,2,"server was restarted for being idle too long")
 					end)
 				end
 			end)
