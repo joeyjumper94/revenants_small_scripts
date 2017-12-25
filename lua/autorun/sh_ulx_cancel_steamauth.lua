@@ -17,7 +17,8 @@ timer.Create(TIMER_NAME,5,5,function()
 		cancel_auth:addParam{type=ULib.cmds.PlayerArg}
 		cancel_auth:defaultAccess(ULib.ACCESS_ADMIN)
 		cancel_auth:help("cancel someone's steam authentication ticket")
-		print"loaded ulx cancel auth"
+
+		print("loaded "..TIMER_NAME)
 	elseif timer.RepsLeft(TIMER_NAME)==1 then
 		error("ulx and ulib MUST be installed")
 	end

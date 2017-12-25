@@ -2,18 +2,6 @@ AddCSLuaFile()
 local jailpos=Vector(0,0,0)
 local CATEGORY_NAME="Revenant's ulx extensions"
 
-concommand.Add("jailtest",function(ply,cmd,args)
-	print("jailpos=Vector("..jailpos.x..","..jailpos.y..","..jailpos.z..")")
-	if ply and ply:IsValid() and !ply:IsSuperAdmin() then
-	elseif true then
-	print(CATEGORY_NAME)
-	elseif false then
-		RunConsoleCommand("bot")
-		timer.Simple(1,function()
-			RunConsoleCommand("ulx","jailroom","*","30","test")
-		end)
-	end
-end)
 timer.Create("jail_system_loader",5,5,function()
 	if ulx then
 		timer.Remove("jail_system_loader")

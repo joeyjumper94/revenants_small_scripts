@@ -11,7 +11,7 @@ timer.Create(TIMER_NAME,5,5,function()
 			local month={--we are counting how many days have elapsed since the start of the year
 				0,--Jan
 				day*31,--Feb, 
-				day*(31+28),--Mar will lose one day at the close of febuary 29 AKA leap day or leap years extra day
+				day*(31+28),--Mar will lose one day at the close of febuary 29 AKA leap day
 				day*(31+28+31),--Apr
 				day*(31+28+31+30),--May
 				day*(31+28+31+30+31),--Jun
