@@ -1,10 +1,10 @@
 AddCSLuaFile()
-local jailpos=Vector(0,0,0)
-local CATEGORY_NAME="Revenant's ulx extensions"
-
-timer.Create("jail_system_loader",5,5,function()
-	if ulx then
-		timer.Remove("jail_system_loader")
+local delay=delay or 30
+timer.Simple(delay,function()
+	delay=0	
+	if ulx and ULib then
+		local CATEGORY_NAME="Revenant's extensions"
+		local jailpos=Vector(0,0,0)
 
 		if file.Exists("ulx_jailroom_pos/"..game.GetMap()..".txt","DATA") then
 			data=util.JSONToTable(file.Read("ulx_jailroom_pos/"..game.GetMap()..".txt","DATA"))
@@ -25,7 +25,6 @@ timer.Create("jail_system_loader",5,5,function()
 					["y"]=jailpos.y,
 					["z"]=jailpos.z,
 				}
-				print(util.TableToJSON(data))
 				file.Write("ulx_jailroom_pos/"..game.GetMap()..".txt",util.TableToJSON(data))
 			else
 				print"you cannot use the position of someone who is are everywhere and nowhere at the same time"
@@ -42,7 +41,7 @@ timer.Create("jail_system_loader",5,5,function()
 				if unjail==false then
 					JailRoom(v,seconds)
 					if reason=="" then
-						local str="#A sent #T to the jailroom #i seconds without reason"
+						local str="#A sent #T to the jailroom for #i seconds without reason"
 						ulx.fancyLogAdmin(ply,str,target,seconds)
 					else
 						local str="#A sent #T to the jailroom for #i seconds. Reason: #s"
@@ -81,7 +80,7 @@ timer.Create("jail_system_loader",5,5,function()
 					local time_left=timer.RepsLeft(ply:SteamID64().."ulxJailTimer")
 					ply:SetNWInt("ulxJailTimer",time_left)
 					if time_left<1 then
-						UnJail(ply,true)
+						UnJail(ply)
 					end
 				end
 			end)
@@ -102,88 +101,89 @@ timer.Create("jail_system_loader",5,5,function()
 			end
 		end
 
-		if SERVER then
-			hook.Add("PlayerNoClip","ulxBlockNoclipIfInJail",function(ply,desiredState)
-				if desiredState==true and ply.jailed then
-					return false
+		if CLIENT then
+			hook.Add("HUDPaint","jail_time_hud",function()
+				local ply=LocalPlayer()
+				local time_left=ply:GetNWInt("ulxJailTimer",0)
+				local reason=ply:GetNWString("ulxJailReason","none given")
+				if time_left>0 then
+					draw.DrawText('you are jailed.\ntime left: '..time_left..'\nReason: '..reason.."\nDisconnecting will result in a ban","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.425,Color(255,255,255,255),TEXT_ALIGN_CENTER)
 				end
 			end)
-			hook.Add("PlayerSpawn","ulxSpawnInJailIfDead",function(ply)
-				if ply.jailed then
-					timer.Simple(0,function()
-						ply:SetPos(jailpos)
-					end)
-				end
-			end)
-
-			hook.Add("CanPlayerSuicide","ulxSuicedeCheck",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("PlayerSpawnProp","ulxBlockSpawnIfInJail",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("canBuyVehicle","ulxcanbuyveh",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("PlayerCanPickupWeapon","ulxcanuseswep",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("canBuyShipment","ulxcanbuyshipment",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("canBuyPistol","ulxcanbuypistol",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("canBuyCustomEntity","ulxcanbuyentity",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("canBuyAmmo","ulxcanbuyammo",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("PlayerCanPickupItem","ulxPickUpRest",function(ply)
-				if ply.jailed then
-					return false
-				end
-			end)
-			hook.Add("PlayerDisconnected","ulxColumntIfNeed",function(ply)
-				if ply.jailed then
-					ULib.ban(ply,480,"disconnecting while admin jailed")
-					if darkrp then
-						DarkRP.notifyAll(1,4,"Player "..ply:Nick()..", ("..ply:SteamID()..") was banned for disconnecting while admin jailed")
-					else
-						PrintMessage(HUD_PRINTTALK,"Player "..ply:Nick()..", ("..ply:SteamID()..") was banned for disconnecting while admin jailed")
-					end
-				end
-			end)
-			print"loaded ulx_jailsystem"
+			print"loaded Revenant's jailroom extensions"
 			return
 		end
 
-		hook.Add("HUDPaint","jail_time_hud",function()
-			local ply=LocalPlayer()
-			local time_left=ply:GetNWInt("ulxJailTimer",0)
-			local reason=ply:GetNWString("ulxJailReason","none given")
-			if time_left>0 then
-				draw.DrawText('you are jailed.\ntime left: '..time_left..'\nReason: '..reason.."\nDisconnecting will result in a ban","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.425,Color(255,255,255,255),TEXT_ALIGN_CENTER)
+		hook.Add("PlayerNoClip","ulxBlockNoclipIfInJail",function(ply,desiredState)
+			if desiredState==true and ply.jailed then
+				return false
 			end
 		end)
-	elseif timer.RepsLeft("jail_system_loader")==1 then
-		error("ulx and ulib MUST be installed")
+		hook.Add("PlayerSpawn","ulxSpawnInJailIfDead",function(ply)
+			if ply.jailed then
+				timer.Simple(0,function()
+					ply:SetPos(jailpos)
+				end)
+			end
+		end)
+
+		hook.Add("CanPlayerSuicide","ulxSuicedeCheck",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("PlayerSpawnProp","ulxBlockSpawnIfInJail",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("canBuyVehicle","ulxcanbuyveh",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("PlayerCanPickupWeapon","ulxcanuseswep",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("canBuyShipment","ulxcanbuyshipment",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("canBuyPistol","ulxcanbuypistol",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("canBuyCustomEntity","ulxcanbuyentity",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("canBuyAmmo","ulxcanbuyammo",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("PlayerCanPickupItem","ulxPickUpRest",function(ply)
+			if ply.jailed then
+				return false
+			end
+		end)
+		hook.Add("PlayerDisconnected","ulxColumntIfNeed",function(ply)
+			if ply.jailed then
+				ULib.ban(ply,1440,"disconnecting while admin jailed")
+				if darkrp then
+					DarkRP.notifyAll(1,4,"Player "..ply:Nick()..", ("..ply:SteamID()..") was banned for disconnecting while admin jailed")
+				else
+					PrintMessage(HUD_PRINTTALK,"Player "..ply:Nick()..", ("..ply:SteamID()..") was banned for disconnecting while admin jailed")
+				end
+			end
+		end)
+		print"loaded Revenant's jailroom extensions"
+	else
+		print"ULX and ULib MUST be installed"
 	end
 end)

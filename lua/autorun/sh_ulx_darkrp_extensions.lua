@@ -1,10 +1,11 @@
-local TIMER_NAME="ulx_darkrp_extensions"
-local CATEGORY_NAME="Revenant's ulx extensions"
-timer.Create(TIMER_NAME,5,5,function()
+AddCSLuaFile()
+local delay=delay or 30
+timer.Simple(delay,function()
+	delay=0	
 	if ulx and ULib then
-		timer.Remove(TIMER_NAME)
+		local CATEGORY_NAME="Revenant's extensions"
 
-		local function date()
+--[[		local function date()
 			local minute=60
 			local hour=minute*60
 			local day=hour*24
@@ -32,30 +33,26 @@ timer.Create(TIMER_NAME,5,5,function()
 			local years=year*tonumber(os.date("%Y",os.time()))
 			return seconds+minutes+hours+days+months+years
 		end
-
-		concommand.Add("print_time",function()
-			print(date())
-		end)
-
+]]
 		hook.Add("playerCanChangeTeam","cp_ban_check",function(ply,TEAM,force)
 			if ply and TEAM and ply:IsPlayer() and GAMEMODE.CivilProtection[TEAM] then--is it a player trying to become a civil protection?
 				local time=tonumber(ply:GetPData("cp_ban_list","0"))
 				if time!=0 then
-					if time>date() then
-						if time-date>604800 then--that's how many seconds are in a week
-							return false,DarkRP.getPhrase("have_to_wait", math.ceil(time-date()), "/"..RPExtraTeams[TEAM].command..", "..DarkRP.getPhrase("banned_or_demoted"))
+					if time>os.time() then
+						if time-os.time()<604800 then--is there less that a week left?
+							return false,DarkRP.getPhrase("have_to_wait", math.ceil(time-os.time()), "/"..RPExtraTeams[TEAM].command..", "..DarkRP.getPhrase("banned_or_demoted"))
 						end
 						return false,DarkRP.getPhrase("unable", "/"..RPExtraTeams[TEAM].command, DarkRP.getPhrase("banned_or_demoted"))
 					end
+					ply:SetPData("cp_ban_list","0")
 				end
-				ply:SetPData("cp_ban_list","0")
 			end
 		end)
 
 		function ulx.cpunban(calling_ply,target_ply)
 			local str = "#A unbanned #T from being civil protection"
 			ulx.fancyLogAdmin( calling_ply, str, target_ply)
-			cp_ban_list[tonumber(target_ply:SteamID64())]=nil
+			target_ply:SetPData("cp_ban_list","0")
 		end
 		local cp_unban=ulx.command( CATEGORY_NAME, "ulx cpunban", ulx.cpunban, "!cpunban", false, false, true )
 		cp_unban:addParam{ type=ULib.cmds.PlayerArg }
@@ -75,9 +72,9 @@ timer.Create(TIMER_NAME,5,5,function()
 			end
 
 			if tobool(minutes) then
-				target_ply:SetPData("cp_ban_list",date()+minutes*60)
+				target_ply:SetPData("cp_ban_list",os.time()+minutes*60)
 			else
-				target_ply:SetPData("cp_ban_list",date()+9972201600)--316 years is a long time
+				target_ply:SetPData("cp_ban_list",os.time()+9972201600)--316 years is a long time
 			end
 		end
 		local cp_ban = ulx.command( CATEGORY_NAME, "ulx cpban", ulx.cpban, "!cpban", false, false, true )
@@ -87,9 +84,8 @@ timer.Create(TIMER_NAME,5,5,function()
 		cp_ban:defaultAccess(ULib.ACCESS_ADMIN)
 		cp_ban:help("bans target from civil protection." )
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		print("loaded "..TIMER_NAME)
-	elseif timer.RepsLeft(TIMER_NAME)==1 then
-		timer.Remove("ulx_team_ban_clock")
-		error("ulx and ulib MUST be installed")
+		print"loaded Revenant's darkrp extensions"
+	else
+		print"ULX and ULib MUST be installed"
 	end
 end)

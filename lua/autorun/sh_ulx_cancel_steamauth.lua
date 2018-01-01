@@ -1,7 +1,9 @@
-TIMER_NAME="cancel_auth_loader"
-timer.Create(TIMER_NAME,5,5,function()
-	if ulx then
-		timer.Remove("cancel_auth_loader")
+AddCSLuaFile()
+local delay=delay or 30
+timer.Simple(delay,function()
+	delay=0	
+	if ulx and ULib then
+		local CATEGORY_NAME="Revenant's extensions"
 		function ulx.cancelauth(calling_ply,target_ply)
 			if target_ply and target_ply:IsValid() then
 			
@@ -10,16 +12,16 @@ timer.Create(TIMER_NAME,5,5,function()
 					return
 				end
 				ulx.fancyLogAdmin( calling_ply, "#A Canceled the steam auth ticket of #T", target_ply,true,true )
-				ULib.kick(target_ply,"Client left game (Steam auth ticket has been canceled)")
+				target_ply:Kick("Client left game (Steam auth ticket has been canceled)")
 			end
 		end
-		local cancel_auth=ulx.command("Revenant's ulx extensions","ulx cancel_auth",ulx.cancelauth,"!cancel_auth")
+		local cancel_auth=ulx.command(CATEGORY_NAME,"ulx cancel_auth",ulx.cancelauth,"!cancel_auth",false,false,true )
 		cancel_auth:addParam{type=ULib.cmds.PlayerArg}
 		cancel_auth:defaultAccess(ULib.ACCESS_ADMIN)
 		cancel_auth:help("cancel someone's steam authentication ticket")
 
-		print("loaded "..TIMER_NAME)
-	elseif timer.RepsLeft(TIMER_NAME)==1 then
-		error("ulx and ulib MUST be installed")
+		print"loaded Revenant's steamauth extensions"
+	else
+		print"ULX and ULib MUST be installed"
 	end
 end)

@@ -1,4 +1,4 @@
-local ShouldQuit=CreateConVar("sv_restart_should_quit","0",FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE,"set to 1 to make the server close completely when empty")
+local ShouldQuit=CreateConVar("sv_restart_should_quit","0",FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE,"set to 1 to make the server close completely when empty"):GetBool()
 local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE,"set to 1 to make restarting the server via command SuperAdmin Only"):GetBool()
 local notifyAll=function(type,time,msg)
 	if msg then

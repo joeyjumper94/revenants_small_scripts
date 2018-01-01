@@ -1,7 +1,7 @@
 immunity_time=100
 
 local endimmunity=function(ply,type,time,msg)
-	if ply!=nil and ply:IsValid() and ply:IsPlayer() then--is it a valid player?
+	if ply and ply:IsValid() and ply:IsPlayer() then--is it a valid player?
 		if timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune dictator?
 			timer.Remove(ply:SteamID64().."'s immunity")
 			if msg then
@@ -12,8 +12,10 @@ local endimmunity=function(ply,type,time,msg)
 			end
 			timer.Simple(0,function()
 				timer.Simple(0,function()
-					for k,v in pairs(ply:getJobTable().weapons) do
-						ply:Give(v)
+					if ply and ply:IsValid() then
+						for k,v in pairs(ply:getJobTable().weapons) do
+							ply:Give(v)
+						end
 					end
 				end)
 			end)
@@ -40,7 +42,7 @@ hook.Add("OnPlayerChangedTeam","dictator_immunity_starter",function(ply,before,a
 			PrintMessage(HUD_PRINTTALK,"the "..team.GetName(ply:Team()).." has been made immune for "..immunity_time.." seconds")
 			DarkRP.notifyAll(0,8,"the "..team.GetName(ply:Team()).." is now immune")
 		elseif timer.Exists(ply:SteamID64().."'s immunity") then--they switched out of dictator during their grace time
-			endimmunity(ply,1,8,"the "..team.GetName(ply:Team()).." switched teams")
+			endimmunity(ply,1,8,"the "..team.GetName(before).." switched teams")
 		end
 	end
 end)
