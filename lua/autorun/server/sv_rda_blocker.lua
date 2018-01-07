@@ -72,15 +72,6 @@ timer.Create("rda_blocker_initialize",1,0,function()
 		end)
 		print("loaded rda_blocker")
 
-		concommand.Add("rda_blocker_prep",function(ply,cmd,args)
-			if ply and IsValid(ply) and !ply:IsSuperAdmin() then
-			else
-				for i=1,10 do
-					RunConsoleCommand("bot")
-				end
-			end
-		end)
-
 		concommand.Add("rda_blocker_list_arrests",function(ply,cmd,args)
 			if ply and IsValid(ply) and !ply:IsAdmin() then
 				
