@@ -18,10 +18,10 @@ local color4=Color(255,255,255)
 hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)
 	local attacker=CTakeDamageInfo:GetAttacker() or CTakeDamageInfo:GetInflictor():CPPIGetOwner()
 
-	if attacker and attacker:IsPlayer() and attacker:GetPos():WithinAABox(box[1],box[2]) then--is the attacker in spawn?
-		CTakeDamageInfo:SetDamage(0) -- prevent spawn abuse
-	elseif ply and ply:IsPlayer() and ply:GetPos():WithinAABox(box[1],box[2]) then--is the player in spawn?
+	if ply and ply:IsPlayer() and ply:GetPos():WithinAABox(box[1],box[2]) then--is the player in spawn?
 		CTakeDamageInfo:SetDamage(0) -- block damage
+	elseif attacker and attacker:IsValid() and attacker:GetPos():WithinAABox(box[1],box[2]) then--is the attacker in spawn?
+		CTakeDamageInfo:SetDamage(0) -- prevent spawn abuse
 	end
 end)
 hook.Add("HUDPaint","revenants_safezone",function()
