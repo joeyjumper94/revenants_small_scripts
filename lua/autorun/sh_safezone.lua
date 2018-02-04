@@ -3,16 +3,16 @@ local box={--the min values must be first
 	Vector(-1468.72,-1132.25,-36.87)
 }
 
-local line1="Equestrian Dreams Safe Zone"
+local line1="Safe Zone"
 local color1=Color(255,51,51)
 
 local line2="you are free from all damage"
 local color2=Color(204,204,204)
 
-local line3="enjoy your stay"
+local line3=""
 local color3=Color(255,255,255)
 
-local line4="you can read the rules by typing !motd"
+local line4=""
 local color4=Color(255,255,255)
 
 hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)
