@@ -36,14 +36,14 @@ hook.Add("PlayerSpawn","revenants_safezone",function(ply)
 end)
 
 hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)
-	local attacker=CTakeDamageInfo:GetAttacker() or CTakeDamageInfo:GetInflictor():CPPIGetOwner()
-	if attacker and attacker:IsPlayer() and attacker:GetPos():WithinAABox(safe[1],safe[2]) then--is the attacker in spawn?
-		CTakeDamageInfo:SetDamage(0) -- prevent spawn abuse
-		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
-	elseif ply and ply:IsPlayer() and ply:GetPos():WithinAABox(safe[1],safe[2]) then--is the player in spawn?
+	local attacker=CTakeDamageInfo:GetInflictor():CPPIGetOwner() or CTakeDamageInfo:GetAttacker()
+	if ply and ply:IsPlayer() and ply:GetPos():WithinAABox(safe[1],safe[2]) then--is the player in spawn?
 		CTakeDamageInfo:SetDamage(0) -- block damage
 		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
-	end
+	elseif attacker and attacker:IsPlayer() and attacker:GetPos():WithinAABox(safe[1],safe[2]) then--is the attacker in spawn?
+		CTakeDamageInfo:SetDamage(0) -- prevent spawn abuse
+		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
+	nd
 end)
 hook.Add("HUDPaint","revenants_safezone",function()
 	if LocalPlayer():GetPos():WithinAABox(safe[1],safe[2]) then
