@@ -29,7 +29,7 @@ local color5=Color(255,255,255,255)
 hook.Add("PlayerSpawn","revenants_safezone",function(ply)
 	timer.Simple(0,function()
 		if ply and ply:IsValid() and ply:IsPlayer() then
-			if ply:getJobTable().catagory=="Dwellers" or ply:isArrested() then return end--don't send dwellers or arrested players to the fountain
+			if ply:isArrested() then return end --don't send arrested players to the fountain
 			ply:SetPos(Vector(math.random(spawn[1].x,spawn[2].x),math.random(spawn[1].y,spawn[2].y),math.random(spawn[1].z,spawn[2].z)))
 		end
 	end)
