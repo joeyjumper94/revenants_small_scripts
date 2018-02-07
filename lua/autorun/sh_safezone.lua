@@ -1,11 +1,11 @@
 local safe={--the min values must be first
--- players will be safe from damage and unable to be damaged if they are inside a box defined by these two vectors
+-- players will be safe from damage if they are inside a box defined by these two vectors
 	Vector(-2340.81,-2008.91,-203.71),
 	Vector(-1468.72,-1132.25,-36.87)
 }
 
 local spawn={--the min values must be first
---	players will spawn somewhere in side a box defined by these two vectors
+--	players will spawn somewhere inside a box defined by these two vectors
 	Vector(-2203,-1861,96),
 	Vector(-1608,-1282,96)
 }
