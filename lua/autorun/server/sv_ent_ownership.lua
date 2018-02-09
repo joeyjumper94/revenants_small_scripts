@@ -4,6 +4,10 @@ local ent_ownership_list={--add an entity class as the key in this table and ass
 local table_is_blacklist=true --remove this line if you want the table above to be a whitelist
 
 --no need to touch anything below here
+if !CPPISetOwner then
+	print'you need a prop protection addon that uses CPPI.'
+	return
+end
 hook.Add("playerBoughtAmmo","playerBoughtAmmo",function(ply,ammoTable,ent,price)
 	if ent and ply and ent_ownership_list and ply:IsValid() and ent:IsValid() and ply:IsPlayer() then --nilchecking is habitual
 		if ent_ownership_list[ent:GetClass()]!=table_is_blacklist then
