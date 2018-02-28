@@ -1,10 +1,14 @@
-local ShouldQuit=CreateConVar("sv_restart_should_quit","0",FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE,"set to 1 to make the server close completely when empty"):GetBool()
-local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE,"set to 1 to make restarting the server via command SuperAdmin Only"):GetBool()
+local flags={FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE}
+local ShouldQuit=CreateConVar("sv_restart_should_quit","0",flags,"set to 1 to make the server close completely when empty, only use when the server can restart automatically if it was shut down or crashed"):GetBool()
+local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",flags,"set to 1 to make restarting the server via command SuperAdmin Only"):GetBool()
+local Shouldcrash=CreateConVar("sv_restart_should_crash","0",flags,"set to 1 to make the restarter crash the server, use only when the server can automatically recover from crashes"):GetBool()
 local notifyAll=function(type,time,msg)
 	if msg then
 		print(msg)
-		if type and time then
+		if type and time and DarkRP and DarkRP.notifyAll then
 			DarkRP.notifyAll(type,time,msg)
+		else
+			PrintMessage(HUD_PRINTTALK,msg)
 		end
 	end
 end
@@ -12,8 +16,14 @@ end
 local RestartFn=function(type,time,msg)
 	notifyAll(type,time,msg)
 	timer.Simple(time,function()
-		if #player.GetHumans()==0 and ShouldQuit then--is the server empty of human players?
+		if #player.GetHumans()==0 and ShouldQuit and game.IsDedicated() then--is the server empty of human players?
 			RunConsoleCommand("_restart")--this actually closes the server
+		elseif Shouldcrash and game.IsDedicated() then
+			local E=ents.Create("prop_physics")
+			E:DeleteOnRemove(game.GetWorld())
+			timer.Simple(0,function()
+				E:Remove()
+			end)
 		else
 			RunConsoleCommand("changelevel",game.GetMap())--by changing the level to the current map, we effectively restart the server
 		end
