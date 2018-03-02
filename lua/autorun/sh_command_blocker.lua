@@ -41,7 +41,9 @@ function meta:ConCommand(cmd)
 the third part of the stack should say where this function was called from.]])
 	end
 	if SERVER then
-		self:SendLua("LocalPlayer():ConCommand('"..cmd.."')")
+		timer.Simple(0.1,function()
+			self:SendLua("LocalPlayer():ConCommand('"..cmd.."')")
+		end)
 	else
 		RCC(tbl[1],tbl[2],tbl[3],tbl[4],tbl[5],tbl[6],tbl[7],tbl[8],tbl[9])
 	end
