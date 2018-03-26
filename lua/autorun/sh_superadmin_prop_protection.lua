@@ -11,46 +11,46 @@ local protection={
 }
 hook.Add("PhysgunPickup","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,Ent)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
 end)
 hook.Add("CanDrive","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,Ent)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.drive then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.drive then return false end
 end)
 hook.Add("CanTool","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,trace,tool)
 	if !trace then return false end
 	local Ent=trace.Entity
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.toolgun then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.toolgun then return false end
 end)
 hook.Add("CanProperty","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,property,Ent)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.property then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.property then return false end
 end)
 
 if CLIENT then return end--the rest of these hooks only work serverside
 
 hook.Add("CanEditVariable","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ent,Ply)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.editvariable then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.editvariable then return false end
 end)
 hook.Add("OnPhysgunReload","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Physgun,Ply)
 	if !(Ply and Ply:IsValid() and Ply:GetEyeTrace()) then return false end
 	local Ent=Ply:GetEyeTrace().Entity
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
 end)
 hook.Add("PlayerUse","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,Ent)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.use then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.use then return false end
 end)
 hook.Add("CanPlayerUnfreeze","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ply,Ent,PhysObj)
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.physgun then return false end
 end)
 hook.Add("EntityTakeDamage","only_superadmins_can_touch_stuff_owned_by_superadmins",function(Ent,CTakeDamageInfo)
 	if !CTakeDamageInfo then return true end
 	local Ply=CTakeDamageInfo:GetAttacker()--make sure that Ply is localized
 	if Ply and Ply:IsValid() and Ply:IsPlayer() and Ply:IsSuperAdmin() then return end--if they are a superadmin then let them interact with it
-	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.damage then return true end
+	if Ent and Ent:CPPIGetOwner() and Ent:CPPIGetOwner():IsValid() and Ent:CPPIGetOwner():IsSuperAdmin() and protection.damage then return true end
 end)
