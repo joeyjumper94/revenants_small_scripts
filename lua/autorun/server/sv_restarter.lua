@@ -1,7 +1,9 @@
 local flags={FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE}
-local ShouldQuit=CreateConVar("sv_restart_should_quit","0",flags,"set to 1 to make the server close completely when empty, only use when the server can restart automatically if it was shut down or crashed"):GetBool()
-local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",flags,"set to 1 to make restarting the server via command SuperAdmin Only"):GetBool()
-local Shouldcrash=CreateConVar("sv_restart_should_crash","0",flags,"set to 1 to make the restarter crash the server, use only when the server can automatically recover from crashes"):GetBool()
+local ShouldQuit=CreateConVar("sv_restart_should_quit","0",flags,[[set to 1 to make the server close completely when empty, set to 2 to always close the server.
+Only use when the server can restart automatically if it was shut down]]):GetInt()
+local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",flags,[[set to 1 to make restarting the server via command SuperAdmin Only]]):GetBool()
+local Shouldcrash=CreateConVar("sv_restart_should_crash","0",flags,[[set to 1 to make the restarter crash the server if empty, set to 2 to always crash the server,
+Only use when the server can restart automatically if it was crashed]]):GetInt()
 local notifyAll=function(type,time,msg)
 	if msg then
 		print(msg)
@@ -16,14 +18,12 @@ end
 local RestartFn=function(type,time,msg)
 	notifyAll(type,time,msg)
 	timer.Simple(time,function()
-		if #player.GetHumans()==0 and ShouldQuit and game.IsDedicated() then--is the server empty of human players?
+		if !game.IsDedicated() then
+			RunConsoleCommand("changelevel",game.GetMap())--by changing the level to the current map, we effectively restart the server
+		elseif #player.GetHumans()==0 and ShouldQuit==1 or ShouldQuit>1 then
 			RunConsoleCommand("_restart")--this actually closes the server
-		elseif Shouldcrash and game.IsDedicated() then
-			local E=ents.Create("prop_physics")
-			E:DeleteOnRemove(game.GetWorld())
-			timer.Simple(0,function()
-				E:Remove()
-			end)
+		elseif #player.GetHumans()==0 and Shouldcrash==1 or Shouldcrash>1 then
+			ents.Create("worldspawn"):Remove()--this will crash the server
 		else
 			RunConsoleCommand("changelevel",game.GetMap())--by changing the level to the current map, we effectively restart the server
 		end
@@ -34,7 +34,7 @@ hook.Add("Initialize","sv_restart_Initialize",function(ply)
 	timer.Simple(1,function()
 		hook.Add("PlayerDisconnected","sv_restart_empty_server",function(ply)
 			timer.Simple(0.1,function()--delay for a tenth of a second
-				if (player.GetCount()) == 0 then--the server is now empty?
+				if (player.GetCount())==0 then--the server is now empty?
 					timer.Create("sv_restart_empty_server_timer",598,1,function()--after 10 minutes of being empty we execute a function
 						RestartFn(1,2,"server was restarted for being idle too long")
 					end)
@@ -56,11 +56,11 @@ hook.Add("PlayerInitialSpawn","sv_restart_player_join",function(ply)--called whe
 			notifyAll(3,8,"30 minutes till auto restart!")
 		elseif max_uptime-cur_uptime==10 then--10 minutes left
 			notifyAll(3,8,"10 minutes till auto restart!")
-		elseif max_uptime-cur_uptime== 5 then-- 5 minutes left
+		elseif max_uptime-cur_uptime==5 then-- 5 minutes left
 			notifyAll(3,8," 5 minutes till auto restart!")
-		elseif max_uptime-cur_uptime== 1 then-- 1  minute left
+		elseif max_uptime-cur_uptime==1 then-- 1  minute left
 			notifyAll(3,8," 1 minute  till auto restart!")
-		elseif max_uptime-cur_uptime<= 0 then-- 0 minutes left
+		elseif max_uptime-cur_uptime<=0 then-- 0 minutes left
 			RestartFn(1,8," 0 minutes till auto restart!")
 		end
 	end)
