@@ -15,7 +15,7 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 				PrintMessage(HUD_PRINTTALK,"sv_ban_msg only works if ULib is installed") 
 			end
 		end
-		hook.Remove("ULibBanCheck")
+		hook.Remove("CheckPassword","ULibBanCheck")
 		return 
 	end
 

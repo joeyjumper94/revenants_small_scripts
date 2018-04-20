@@ -1,3 +1,4 @@
+if !game.GetMap():find("downtown_v4c") and !game.GetMap():find("oceanic_city") then return end
 local safe={--the min values must be first
 -- players will be safe from damage if they are inside a box defined by these two vectors
 	Vector(-2340.81,-2008.91,-203.71),
