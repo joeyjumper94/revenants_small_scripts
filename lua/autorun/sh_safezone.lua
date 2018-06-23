@@ -1,15 +1,5 @@
-if !game.GetMap():find("downtown_v4c") and !game.GetMap():find("oceanic_city") then return end
-local safe={--the min values must be first
--- players will be safe from damage if they are inside a box defined by these two vectors
-	Vector(-2340.81,-2008.91,-203.71),
-	Vector(-1468.72,-1132.25,100)
-}
-
-local spawn={--the min values must be first
---	players will spawn somewhere inside a box defined by these two vectors
-	Vector(-2203,-1861,96),
-	Vector(-1608,-1282,96)
-}
+local MAP=game.GetMap():lower()
+if !MAP:find("downtown_v4c") and MAP!="oceanic_city" and !MAP:find("rockford") then return end
 
 local line1="Revenant's safe zone"
 local color1=Color(255,255,255,255)
@@ -26,13 +16,35 @@ local color4=Color(255,255,255,255)
 local line5=""
 local color5=Color(255,255,255,255)
 --end of config
+
+local safe={--the min values must be first
+-- players will be safe from damage if they are inside a box defined by these two vectors
+	Vector(-2340.81,-2008.91,-203.71),
+	Vector(-1468.72,-1132.25,100),
+}
+local spawn={--the min values must be first
+--	players will spawn somewhere inside a box defined by these two vectors
+	Vector(-2203,-1861,96),
+	Vector(-1608,-1282,96)
+}
+if MAP:find("rockford") then
+	safe={
+		Vector(-4951.595703, -5453.610840, -13887.968750),
+		Vector(-4581.605469, -5221.244141, -13810.139648),
+	}
+	spawn=nil
+elseif MAP=="rp_oceanic_city" then
+	spawn=nil
+end
 hook.Add("PlayerSpawn","revenants_safezone",function(ply)
-	timer.Simple(0.1,function()
-		if ply and ply:IsValid() and ply:IsPlayer() then
-			if DarkRP and ply:isArrested() then return end--don't send arrested players to the fountain
-			ply:SetPos(Vector(math.random(spawn[1].x,spawn[2].x),math.random(spawn[1].y,spawn[2].y),math.random(spawn[1].z,spawn[2].z)))
-		end
-	end)
+	if spawn and spawn[1] and !spawn[2] then
+		timer.Simple(0.1,function()
+			if ply and ply:IsValid() and ply:IsPlayer() then
+				if DarkRP and ply:isArrested() then return end--don't send arrested players to the fountain
+				ply:SetPos(Vector(math.random(spawn[1].x,spawn[2].x),math.random(spawn[1].y,spawn[2].y),math.random(spawn[1].z,spawn[2].z)))
+			end
+		end)
+	end
 end)
 
 hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)

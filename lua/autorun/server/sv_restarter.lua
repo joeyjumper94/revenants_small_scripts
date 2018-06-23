@@ -61,7 +61,7 @@ hook.Add("PlayerInitialSpawn","sv_restart_player_join",function(ply)--called whe
 		elseif max_uptime-cur_uptime==1 then-- 1  minute left
 			notifyAll(3,8," 1 minute  till auto restart!")
 		elseif max_uptime-cur_uptime<=0 then-- 0 minutes left
-			RestartFn(1,8," 0 minutes till auto restart!")
+			RestartFn(1,3," 0 minutes till auto restart!")
 		end
 	end)
 end)
@@ -74,8 +74,8 @@ concommand.Add("sv_restart_now",function(ply)
 		ply:SendLua([[print('Unknown command "sv_restart_now"')]])--make it seem like the command doesn't exist
 		--DarkRP.notify(ply,1,4,"Only admins and up can use that command")--tell them why it failed
 	elseif ply and IsValid(ply) then--so a player ran the command
-		RestartFn(1,8,ply:Nick().." ("..ply:SteamID()..") restarted the server")
+		RestartFn(1,3,ply:Nick().." ("..ply:SteamID()..") restarted the server")
 	else--it was run from the server console
-		RestartFn(1,8,"CONSOLE (nil) restarted the server")
+		RestartFn(1,3,"CONSOLE (nil) restarted the server")
 	end
 end)

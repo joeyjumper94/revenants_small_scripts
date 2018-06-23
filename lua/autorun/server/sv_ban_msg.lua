@@ -1,3 +1,18 @@
+local blacklist={
+	["STEAM_1:0:000000000"]={
+		admin="hardwired ban",
+		reason="example banid",
+		time=0,
+		unban=0
+	},
+	["0.0.0.0"]={
+		admin="hardwired ban",
+		reason="example banip",
+		time=0,
+		unban=0
+	},
+}
+
 local banmsgf=file.Read("ulx/banmessage.txt") or ""
 banmsg=string.Split(banmsgf,[[; The two steam ID vairables are useful for constructing URLs for appealing bans
 ]])[2] or [[-------===== [ BANNED ] =====-------
@@ -21,11 +36,29 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 
 	local steamid = util.SteamIDFrom64( steamid64 )
 	local banData = ULib.bans[ steamid ]
+	if !banData then
+		banData=blacklist[steamid]
+	end
+	if !banData then
+		banData=blacklist[string.Split(ip)[1]]
+		if banData then
+			local time,reason,name=0,banData.reason,banData.name or name
+			ULib.addBan(steamid,time,reason,name,admin)
+		end
+	end
 	if !banData then return end -- Not banned
-
-	PrintTable(banData)
-
+	local unbanStr = "(Permaban)"
+	local unban = tonumber( banData.unban )
+	if unban and unban > 0 then
+		local left=unban-os.time()
+		if left<0 then 
+			return--expired
+		end
+		unbanStr = ULib.secondsToStringTime(left)
+	end
+	banmsg=string.Replace(banmsg,"{{TIME_LEFT}}",unbanStr)
 	banmsg=string.Replace(banmsg,"{{STEAMID64}}",steamid64)
+	banmsg=string.Replace(banmsg,"{{IP}}",ip)
 	banmsg=string.Replace(banmsg,"{{STEAMID}}",steamid)
 
 	local admin = "Console"
@@ -45,14 +78,6 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 		time=os.date("%m/%d/%y %H:%M:%S",banData.time)
 	end
 	banmsg=string.Replace(banmsg,"{{BAN_START}}",time)
-
-
-	local unbanStr = "(Permaban)"
-	local unban = tonumber( banData.unban )
-	if unban and unban > 0 then
-		unbanStr = ULib.secondsToStringTime( unban - os.time() )
-	end
-	banmsg=string.Replace(banmsg,"{{TIME_LEFT}}",unbanStr)
 	
 	Msg(string.format("%s (%s)<%s> was kicked by ULib because they are on the ban list\n", name, steamid, ip))
 	return false,banmsg
