@@ -40,7 +40,7 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 		banData=blacklist[steamid]
 	end
 	if !banData then
-		banData=blacklist[string.Split(ip)[1]]
+		banData=blacklist[string.Split(ip,":")[1]]
 		if banData then
 			local time,reason,name=0,banData.reason,banData.name or name
 			ULib.addBan(steamid,time,reason,name,admin)
