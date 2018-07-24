@@ -4,7 +4,7 @@ concommand.Add("revenants_screenshot",function(ply,cmd,args)
 	if ScreenshotRequested==nil or ScreenshotRequested==0 then
 		ScreenshotRequested=100
 	end
-end,"take a screenshot, provide a number arg to denote quality. higher number means higher quality")
+end,function() end,"take a screenshot, provide a number arg to denote quality. higher number means higher quality")
 local months={"january","febuary","march","april","may","june","july","august","September","october","november","december"}
 local days={
 	"01st","02nd","03rd","04th","05th","06th","07th","08th","09th","10th",
@@ -20,13 +20,13 @@ hook.Add("PostRender","example_screenshot",function()
 		file.CreateDir(DIR)
 	end
 	file.Write(DIR..FILE,render.Capture({
-		format = "jpeg",
-		quality = math.Clamp(tonumber(ScreenshotRequested),1,100),
-		h = ScrH(),
-		w = ScrW(),
-		x = 0,
-		y = 0,
+		format="jpeg",
+		quality=math.Clamp(tonumber(ScreenshotRequested),1,100),
+		h=ScrH(),
+		w=ScrW(),
+		x=0,
+		y=0,
 	}))
-	LocalPlayer():PrintMessage(HUD_PRINTTALK,"screenshot saved in garrysmod/data/"..DIR..FILE)
+	LocalPlayer():PrintMessage(HUD_PRINTTALK,string.Replace("screenshot saved in garrysmod/data/"..DIR..FILE,"/","\\"))
 	ScreenshotRequested = nil
 end)
