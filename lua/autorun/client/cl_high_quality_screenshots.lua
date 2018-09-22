@@ -5,6 +5,15 @@ concommand.Add("revenants_screenshot",function(ply,cmd,args)
 		ScreenshotRequested=100
 	end
 end,function() end,"take a screenshot, provide a number arg to denote quality. higher number means higher quality")
+concommand.Add("revenants_screenshot_delayed",function(ply,cmd,args)
+	ScreenshotRequested=tonumber(args[1])
+	timer.Simple(tonumber(args[2]) or 3,function()
+		if ScreenshotRequested==nil or ScreenshotRequested==0 then
+			ScreenshotRequested=100
+		end
+	end)
+end,function() end,"take a screenshot, similar to revenants_screenshot, but the second argument denotes how many seconds to wait before taking the screenshot")
+
 local months={"january","febuary","march","april","may","june","july","august","September","october","november","december"}
 local days={
 	"01st","02nd","03rd","04th","05th","06th","07th","08th","09th","10th",
