@@ -1,6 +1,6 @@
 immunity_time=100
 local endimmunity=function(ply,type,time,msg)
-	if ply and ply:IsValid() and ply:IsPlayer() then--is it a valid player?
+	if ply and ply.getJobTable and ply:getJobTable() then -- is the player valid?
 		if timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune dictator?
 			timer.Remove(ply:SteamID64().."'s immunity")
 			if msg then
@@ -22,8 +22,8 @@ local endimmunity=function(ply,type,time,msg)
 	end
 end
 
-hook.Add("PlayerSay","dictator_immunity_ender",function(ply,text,teamChat)
-	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then--is it a valid player?
+hook.Add("PlayerSay","mayor_immunity",function(ply,text,teamChat)
+	if ply and ply.getJobTable and ply:getJobTable() then -- is the player valid?
 		if ply:getJobTable().mayor then--and timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune dictator?
 			if string.lower(text):find("endimmunity") then--they are trying to end their immunity
 				endimmunity(ply,4,8,"the "..team.GetName(ply:Team()).." ended his immunity")
@@ -32,8 +32,8 @@ hook.Add("PlayerSay","dictator_immunity_ender",function(ply,text,teamChat)
 	end
 end)
 
-hook.Add("OnPlayerChangedTeam","dictator_immunity_starter",function(ply,before,after)
-	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then--is it a valid player?
+hook.Add("OnPlayerChangedTeam","mayor_immunity",function(ply,before,after)
+	if ply and ply.getJobTable and ply:getJobTable() then -- is the player valid?
 		if RPExtraTeams[after].mayor then--they became mayor
 			timer.Create(ply:SteamID64().."'s immunity",immunity_time,1,function()
 				endimmunity(ply,0,8,"the "..team.GetName(ply:Team()).."'s immunity ran out")
@@ -47,7 +47,7 @@ hook.Add("OnPlayerChangedTeam","dictator_immunity_starter",function(ply,before,a
 end)
 
 hook.Add("EntityTakeDamage","dictator_immunity_damage_blocker",function(ply,CTakeDamageInfo)
-	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then -- is the player valid?
+	if ply and ply.getJobTable and ply:getJobTable() then -- is the player valid?
 		if ply:getJobTable().mayor and timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune dictator?
 			CTakeDamageInfo:SetDamageType(DMG_FALL) --fall damage won't affect armor
 			CTakeDamageInfo:SetDamage(0) --set the damage to 0
@@ -55,7 +55,7 @@ hook.Add("EntityTakeDamage","dictator_immunity_damage_blocker",function(ply,CTak
 	end
 end)
 
-hook.Add("PlayerDisconnected","dictator_immunity_disconnect_handler",function(ply) 
+hook.Add("PlayerDisconnected","mayor_immunity",function(ply) 
 	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then--is it a valid player?
 		if timer.Exists(ply:SteamID64().."'s immunity") then
 			endimmunity(ply,1,8,"the "..team.GetName(ply:Team()).." left the server before his immunity ran out")
@@ -65,18 +65,28 @@ end)
 
 local allowed_weapons={}--this table will contain a list of weapons that admins will alway be given on spawn
 local populate_list=function()--this function populates the allowed_weapons table
-	for k,v in ipairs(GAMEMODE.Config.DefaultWeapons) do
-		allowed_weapons[v]=true
-	end
-	for k,v in ipairs(GAMEMODE.Config.AdminWeapons) do
-		allowed_weapons[v]=true
+	if GAMEMODE.Config then
+		for k,v in ipairs(GAMEMODE.Config.DefaultWeapons) do
+			allowed_weapons[v]=true
+		end
+		for k,v in ipairs(GAMEMODE.Config.AdminWeapons) do
+			allowed_weapons[v]=true
+		end
+	else
+		for k,event in ipairs{
+			"EntityTakeDamage",
+			"Initialize",
+			"OnPlayerChangedTeam",
+			"PlayerCanPickupWeapon",
+			"PlayerDisconnected",
+			"PlayerSay",
+		}do
+			hook.Remove(event,"mayor_immunity")
+		end
 	end
 end
-hook.Add("Initialize","dictator_allowed_optimization",populate_list)--this calls the populate_list function when the gamemode loads
-if GAMEMODE and GAMEMODE.Config and GAMEMODE.Config.DefaultWeapons then populate_list() end--this does the same as the hook but only after the gamemode has loaded
-
-hook.Add("PlayerCanPickupWeapon","dictator_immunity_anti_abuse",function(ply,wep)
-	if ply and ply:IsValid() and ply:IsPlayer() and ply:getJobTable() then--is it a valid player?
+hook.Add("PlayerCanPickupWeapon","mayor_immunity",function(ply,wep)
+	if ply and ply.getJobTable and ply:getJobTable() then--is it a valid player?
 		if ply:getJobTable().mayor and timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune mayor?
 			local class=wep:GetClass()
 
@@ -94,3 +104,5 @@ you have ]]..math.Round(timer.TimeLeft(ply:SteamID64().."'s immunity"),2).." sec
 		end
 	end
 end)
+hook.Add("Initialize","mayor_immunity",populate_list)--this calls the populate_list function when the gamemode loads
+if GAMEMODE and GAMEMODE.Config and GAMEMODE.Config.DefaultWeapons or player.GetAll()[1] then populate_list() end--this does the same as the hook but only after the gamemode has loaded
