@@ -31,7 +31,7 @@ local RestartFn=function(type,time,msg)
 		if game.IsDedicated() and #player.GetHumans()==0 or game.IsDedicated() and treat_as_empty then
 			if Shouldcrash then
 				hook.Run"ShutDown"--let any addons know the server is about to ShutDown
-				game.GetWorld():Fire"kill"--firing the kill imput of the worldspawn removes the world and crashes the server
+				ents.Create'worldspawn':Remove()--firing the kill imput of the worldspawn removes the world and crashes the server
 			elseif ShouldQuit then
 				RunConsoleCommand"_restart"--shuts down the server
 			else
@@ -59,7 +59,7 @@ end)
 
 hook.Add("PlayerInitialSpawn","sv_restart_player_join",function(ply)--called when someone joins
 	timer.Remove("sv_restart_empty_server_timer")--stop the empty server timer
-	if timer.Exits"sv_restart_uptime_tracker" then return end--is the server's uptime timer running?
+	if timer.Exists"sv_restart_uptime_tracker" then return end--is the server's uptime timer running?
 	local cur_uptime=cur_uptime or 0--we want to define cur_uptime only when the first player joins
 	local max_uptime=1440--define how long we can have the server run before a restart, 1440 minutes is one day
 	timer.Create("sv_restart_uptime_tracker",60,0,function()--runs a function every minute

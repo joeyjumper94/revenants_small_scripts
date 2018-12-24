@@ -1,4 +1,5 @@
 local blacklist={
+	["825240170"]=true, --ulx Physgun Freeze Script 0 models
 	["746615375"]=true, --Blink SWEP 0 models
 	["157748952"]=true, --DogBite 0 models
 	["366071718"]=true, --Stealth Camo 0 models
@@ -39,6 +40,7 @@ local blacklist={
 	["389445061"]=true, --[DarkRP] Bank Robbery System 0 models
 }
 local maps={
+	["1568720448"]=true, --rp_downtown_em_hs_16 0 models
 	["625091269"]=true, --rp_rockford_open 0 models
 	["328735857"]=true, --RP Rockford (Models/Materials Only) 193 models
 	["918642421"]=true, --rp_downtown_v4c_v2 Map 0 models
@@ -65,7 +67,6 @@ file.Write('sv_fastdl.txt',
 ]]..str..
 [[end
 local function init()
-	loaded=true
 	local MAP=game.GetMap()
 	if MAP=="rp_downtown_v4c_v2" then
 		resource.AddWorkshop("918642421") --rp_downtown_v4c_v2 Map 0 models
