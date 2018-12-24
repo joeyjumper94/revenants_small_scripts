@@ -13,8 +13,10 @@ local function rda_blocker_mayor_present()
 end
 local loaded=loaded or player.GetAll()[1]
 local function init()
+	if !GAMEMODE.Config then return end
 	if rda_blocker_demote_time<0 then rda_blocker_demote_time=GAMEMODE.Config.demotetime or 120 end
 	hook.Add("canArrest","rda_blocker_arrest",function(cop,criminal)
+		if true then return end
 		if cop and criminal and cop:IsValid() and criminal:IsValid() and cop:IsPlayer() and criminal:IsPlayer() and cop:SteamID64() and criminal:SteamID64() and cop:isCP() then
 			cop.rda_blocker_count=cop.rda_blocker_count or 0
 			cop.rda_blocker_count=cop.rda_blocker_count+criminal:isArrested() and 0.1 or 1
