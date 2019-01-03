@@ -1,14 +1,14 @@
-local flags={FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE}
+local flags=bit.bor(FCVAR_ARCHIVE,FCVAR_SERVER_CAN_EXECUTE)
 
 local ShouldQuit=CreateConVar("sv_restart_should_quit","0",flags,[[set to 1 to make the server close completely when empty.
-Only use when the server can restart automatically if it was shut down]]):GetInt()
+Only use when the server can restart automatically if it was shut down]]):GetBool()
 cvars.AddChangeCallback("sv_restart_should_quit",function(v,o,n) ShouldQuit=n!="0" end,"sv_restart_should_quit")
 
 local SuperAdminUp=CreateConVar("sv_restart_superadmin_only","0",flags,[[set to 1 to make restarting the server via command SuperAdmin Only]]):GetBool()
 cvars.AddChangeCallback("sv_restart_superadmin_only",function(v,o,n) SuperAdminUp=n!="0" end,"sv_restart_superadmin_only")
 
 local Shouldcrash=CreateConVar("sv_restart_should_crash","0",flags,[[set to 1 to make the restarter crash the server if empty
-Only use when the server can restart automatically if it was crashed]]):GetInt()
+Only use when the server can restart automatically if it was crashed]]):GetBool()
 cvars.AddChangeCallback("sv_restart_should_crash",function(v,o,n) Shouldcrash=n!="0" end,"sv_restart_should_crash")
 
 local treat_as_empty=CreateConVar("sv_restart_treat_as_empty","0",flags,[[should the restart function always treat the server as empty?]]):GetBool()
@@ -27,6 +27,9 @@ end
 
 local RestartFn=function(type,time,msg)
 	notifyAll(type,time,msg)
+	if player.GetCount()==0 then
+		RunConsoleCommand'bot'
+	end
 	timer.Simple(time,function()
 		if game.IsDedicated() and #player.GetHumans()==0 or game.IsDedicated() and treat_as_empty then
 			if Shouldcrash then
