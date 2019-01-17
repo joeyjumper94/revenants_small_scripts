@@ -1,4 +1,16 @@
 local blacklist={
+	["STEAM_0:1:148750445"]={--4evolution
+		admin="(Console)",
+		reason="extremely toxic",
+		time=0,
+		unban=0
+	},
+	["STEAM_0:0:127519646"]={--Rj
+		admin="(Console)",
+		reason="extremely toxic",
+		time=0,
+		unban=0
+	},
 	["STEAM_0:0:0"]={
 		admin="hardwired ban",
 		reason="example banid",
@@ -62,13 +74,13 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 	banmsg=banmsg:Replace("{{STEAMID}}",steamid)
 
 	local admin = "Console"
-	if banData.admin and banData.admin ~= "" then
+	if banData.admin and banData.admin!="" then
 		admin = banData.admin
 	end
 	banmsg=banmsg:Replace("{{BANNED_BY}}",admin)
 
 	local reason = "(None given)"
-	if banData.reason and banData.reason ~= "" then
+	if banData.reason and banData.reason != "" then
 		reason = banData.reason
 	end
 	banmsg=banmsg:Replace("{{REASON}}",reason)

@@ -27,9 +27,6 @@ end
 
 local RestartFn=function(type,time,msg)
 	notifyAll(type,time,msg)
-	if player.GetCount()==0 then
-		RunConsoleCommand'bot'
-	end
 	timer.Simple(time,function()
 		if game.IsDedicated() and #player.GetHumans()==0 or game.IsDedicated() and treat_as_empty then
 			if Shouldcrash then

@@ -27,6 +27,7 @@ hook.Add("PlayerSay","mayor_immunity",function(ply,text,teamChat)
 		if ply:getJobTable().mayor then--and timer.Exists(ply:SteamID64().."'s immunity") then--is it an immune dictator?
 			if text:lower():find("endimmunity") then--they are trying to end their immunity
 				endimmunity(ply,4,8,"the "..team.GetName(ply:Team()).." ended his immunity")
+				ply.EndOfImmunityTime=CurTime()
 			end
 		end
 	end
@@ -94,6 +95,15 @@ you have ]]..math.Round(timer.TimeLeft(ply:SteamID64().."'s immunity"),2).." sec
 end)
 local populate_list=function()--this function populates the allowed_weapons table
 	if GAMEMODE.Config then
+		for event,name in pairs{--remove the hooks of hackcraft's immunity system
+			PlayerUse="DictatorSafeMode",
+			PlayerDisconnected="DictatorSafeMode",
+			OnPlayerChangedTeam="DictatorSafeMode",
+			PlayerShouldTakeDamage="SpawnProtection YAY",
+			CanPlayerSuicide="NotInJail",
+		}do
+			hook.Remove(event,name)
+		end
 		--generate a whitelist of weapons
 		for k,v in ipairs(GAMEMODE.Config.DefaultWeapons) do
 			allowed_weapons[v]=true

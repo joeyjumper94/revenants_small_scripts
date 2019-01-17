@@ -1,5 +1,5 @@
 local MAP=game.GetMap():lower()
-if !MAP:find("downtown_v4c") and MAP!="oceanic_city" and !MAP:find("rockford") then return end
+if !MAP:find("downtown_v4c") and MAP!="oceanic_city" and !MAP:find("rockford") and MAP!="rp_downtown_v6_dtg_c" then return end
 
 local line1="Revenant's safe zone"
 local color1=Color(255,255,255,255)
@@ -27,6 +27,23 @@ local spawn={--the min values must be first
 	Vector(-2203,-1861,96),
 	Vector(-1608,-1282,96)
 }
+if MAP=="rp_downtown_v6_dtg_c" then
+	safe={
+		Vector(-2279.9,-1947.88,-203.71),Vector(-1544.99,-1192.07,-27)
+	}
+	spawn=nil
+	local remove=function()
+		for k,v in ipairs(ents.FindByClass'info_player_start')do
+			if!v:GetPos():WithinAABox(Vector(-2279.9,-1947.88,-203.71),Vector(-1544.99,-1192.07,-27))then
+				v:Remove()
+			end
+		end
+	end
+	hook.Add("InitPostEntity","revenants_safezone",remove)
+	hook.Add("PostCleanupMap","revenants_safezone",remove)
+end
+
+
 if MAP:find("rockford") then
 	safe={
 		Vector(-4951.595703, -5453.610840, -13887.968750),
@@ -37,7 +54,7 @@ elseif MAP=="rp_oceanic_city" then
 	spawn=nil
 end
 hook.Add("PlayerSpawn","revenants_safezone",function(ply)
-	if spawn and spawn[1] and !spawn[2] then
+	if spawn and spawn[1] and spawn[2] then
 		timer.Simple(0.1,function()
 			if ply and ply:IsValid() and ply:IsPlayer() then
 				if DarkRP and ply:isArrested() then return end--don't send arrested players to the fountain
@@ -59,10 +76,17 @@ hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)
 end)
 hook.Add("HUDPaint","revenants_safezone",function()
 	if LocalPlayer():GetPos():WithinAABox(safe[1],safe[2]) then
-		draw.DrawText(""..line1.."\n\n\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color1,TEXT_ALIGN_CENTER)
-		draw.DrawText("\n"..line2.."\n\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color2,TEXT_ALIGN_CENTER)
-		draw.DrawText("\n\n"..line3.."\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color3,TEXT_ALIGN_CENTER)
-		draw.DrawText("\n\n\n"..line4.."\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color4,TEXT_ALIGN_CENTER)
-		draw.DrawText("\n\n\n\n"..line5.."","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color5,TEXT_ALIGN_CENTER)
+		if true then
+			local w = ScrW()
+			local h = ScrH()
+			draw.SimpleTextOutlined( "Wolven Territory's Safe Zone", "SafeZoneBig", w/2, 60, Color( 255, 0, 0 ), 1, 1, 2, color_black )
+			draw.SimpleTextOutlined( "You are free of ALL damage. THIS IS A NO RP ZONE!", "SafeZoneSmall", w/2, 100, Color( 250, 255, 255 ), 1, 1, 1, color_black )
+		else
+			draw.DrawText(""..line1.."\n\n\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color1,TEXT_ALIGN_CENTER)
+			draw.DrawText("\n"..line2.."\n\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color2,TEXT_ALIGN_CENTER)
+			draw.DrawText("\n\n"..line3.."\n\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color3,TEXT_ALIGN_CENTER)
+			draw.DrawText("\n\n\n"..line4.."\n","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color4,TEXT_ALIGN_CENTER)
+			draw.DrawText("\n\n\n\n"..line5.."","CloseCaption_Bold",ScrW()*0.5,ScrH()*0.1,color5,TEXT_ALIGN_CENTER)
+		end
 	end
 end)
