@@ -57,6 +57,7 @@ hook.Add("PlayerSpawn","revenants_safezone",function(ply)
 	if spawn and spawn[1] and spawn[2] then
 		timer.Simple(0.1,function()
 			if ply and ply:IsValid() and ply:IsPlayer() then
+				if ply.IsDweller and ply:IsDweller() then return end
 				if DarkRP and ply:isArrested() then return end--don't send arrested players to the fountain
 				ply:SetPos(Vector(math.random(spawn[1].x,spawn[2].x),math.random(spawn[1].y,spawn[2].y),math.random(spawn[1].z,spawn[2].z)))
 			end
