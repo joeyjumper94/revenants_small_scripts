@@ -18,7 +18,7 @@ hook.Add("DoPlayerDeath","jobtable_deaths",function(ply,_,CTakeDamageInfo)
 	if weapon==killer then
 		killer=weapon:GetOwner()
 	end
-	if CTakeDamageInfo:IsDamageType(DMG_CRUSH) and not whitelist[weapon:GetClass()] and weapon:CPPIGetOwner()!=ply then
+	if CTakeDamageInfo:IsDamageType(DMG_CRUSH) and not whitelist[CTakeDamageInfo:GetInflictor():GetClass()] and not whitelist[weapon:GetClass()] and weapon:CPPIGetOwner()!=ply then
 		return--someone propkilled them. The death is not valid. Aborting function call
 	end
 	local JobTable=ply:getJobTable()
