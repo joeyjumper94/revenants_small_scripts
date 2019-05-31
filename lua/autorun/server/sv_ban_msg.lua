@@ -2,26 +2,44 @@ local blacklist={
 	["STEAM_0:1:148750445"]={--4evolution
 		admin="(Console)",
 		reason="extremely toxic",
-		time=0,
-		unban=0
+		time=os.time(),
+		unban=0,
 	},
 	["STEAM_0:0:127519646"]={--Rj
 		admin="(Console)",
 		reason="extremely toxic",
-		time=0,
-		unban=0
+		time=os.time(),
+		unban=0,
+	},
+	["STEAM_0:1:162942198"]={--Pepsi,
+		admin="(Console)",
+		reason="Very Petty",
+		time=os.time(),
+		unban=0,
+	},
+	["76561193775028373"]={--Ms Magical,
+		admin="(Console)",
+		reason="Very Petty",
+		time=os.time(),
+		unban=0,
 	},
 	["STEAM_0:0:0"]={
 		admin="hardwired ban",
 		reason="example banid",
-		time=0,
-		unban=0
+		time=os.time(),
+		unban=0,
+	},
+	["00000000000000000"]={
+		admin="hardwired ban",
+		reason="example banid64",
+		time=os.time(),
+		unban=0,
 	},
 	["0.0.0.0"]={
 		admin="hardwired ban",
 		reason="example banip",
-		time=0,
-		unban=0
+		time=os.time(),
+		unban=0,
 	},
 }
 
@@ -48,16 +66,14 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 	local steamid = util.SteamIDFrom64( steamid64 )
 	local banData = ULib.bans[ steamid ]
 	if !banData then
-		banData=blacklist[steamid]
-	end
-	if !banData then
-		banData=blacklist[ip:Split(":")[1]]
+		banData=blacklist[ip:Split":"[1]] or blacklist[steamid64] or blacklist[steamid]
 		if banData then
 			local time,reason,name=0,banData.reason,banData.name or name
 			ULib.addBan(steamid,time,reason,name,admin)
 		end
 	end
 	if !banData then return end -- Not banned
+	blacklist[ip:Split":"[1]]=banData
 	local banmsg=banmsgf
 	local unbanStr = "(Permaban)"
 	local unban = tonumber( banData.unban )
