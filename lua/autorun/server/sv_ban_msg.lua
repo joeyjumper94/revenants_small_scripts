@@ -74,13 +74,13 @@ hook.Add("CheckPassword","ULibBanCheck",function(steamid64,ip,password,clpasswor
 	banmsg=banmsg:Replace("{{STEAMID}}",steamid)
 
 	local admin = "Console"
-	if banData.admin and banData.admin!="" then
+	if banData.admin and banData.admin ~= "" then
 		admin = banData.admin
 	end
 	banmsg=banmsg:Replace("{{BANNED_BY}}",admin)
 
 	local reason = "(None given)"
-	if banData.reason and banData.reason != "" then
+	if banData.reason and banData.reason ~= "" then
 		reason = banData.reason
 	end
 	banmsg=banmsg:Replace("{{REASON}}",reason)

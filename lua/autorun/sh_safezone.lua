@@ -1,6 +1,4 @@
 local MAP=game.GetMap():lower()
-if !MAP:find("downtown_v4c") and MAP!="oceanic_city" and !MAP:find("rockford") and MAP!="rp_downtown_v6_dtg_c" then return end
-
 local line1="Revenant's safe zone"
 local color1=Color(255,255,255,255)
 
@@ -41,23 +39,42 @@ if MAP=="rp_downtown_v6_dtg_c" then
 	end
 	hook.Add("InitPostEntity","revenants_safezone",remove)
 	hook.Add("PostCleanupMap","revenants_safezone",remove)
-end
-
-
-if MAP:find("rockford") then
+elseif MAP:find("rockford") then
 	safe={
-		Vector(-4951.595703, -5453.610840, -13887.968750),
-		Vector(-4581.605469, -5221.244141, -13810.139648),
+		Vector(-4951.59, -5453.62, -13887.97),
+		Vector(-4581.62, -5221.24, -13810.13),
 	}
 	spawn=nil
 elseif MAP=="rp_oceanic_city" then
 	spawn=nil
+elseif MAP=="rp_genova_ob_04" then
+	spawn=nil
+	safe={
+		Vector(1430.2,1173.18,-1.63),
+		Vector(4465.82,2066.7,478.47),
+	}
+	local remove=function()
+		for k,v in ipairs(ents.GetAll())do
+			if v:GetPos():WithinAABox(Vector(1663.968750,1536.000000,92.000000)+Vector(1,1,1),Vector(1663.968750,1536.000000,92.000000)-Vector(1,1,1))then
+				v:Remove()
+			end
+		end
+	end
+	hook.Add("InitPostEntity","revenants_safezone",remove)
+	hook.Add("PostCleanupMap","revenants_safezone",remove)
+	
+	
+
+elseif !MAP:find("downtown_v4c") and MAP!="oceanic_city" and !MAP:find("rockford") and MAP!="rp_downtown_v6_dtg_c" then
+	return
 end
 hook.Add("PlayerSpawn","revenants_safezone",function(ply)
 	if spawn and spawn[1] and spawn[2] then
 		timer.Simple(0.1,function()
 			if ply and ply:IsValid() and ply:IsPlayer() then
-				if ply.IsDweller and ply:IsDweller() then return end
+				if dweller_system and dweller_system[MAP] and dweller_system[MAP].spawns and dweller_system[MAP].spawns[1] then
+					if ply:IsPursuant() or ply:IsDweller() then return end--don't send dwellers or pursuants to the fountain
+				end
 				if DarkRP and ply:isArrested() then return end--don't send arrested players to the fountain
 				ply:SetPos(Vector(math.random(spawn[1].x,spawn[2].x),math.random(spawn[1].y,spawn[2].y),math.random(spawn[1].z,spawn[2].z)))
 			end
@@ -66,18 +83,23 @@ hook.Add("PlayerSpawn","revenants_safezone",function(ply)
 end)
 
 hook.Add("EntityTakeDamage","revenants_safezone",function(ply,CTakeDamageInfo)
-	local attacker=CTakeDamageInfo:GetInflictor():CPPIGetOwner() or CTakeDamageInfo:GetAttacker()
-	if ply and ply:IsPlayer() and ply:GetPos():WithinAABox(safe[1],safe[2]) then--is the player in spawn?
-		CTakeDamageInfo:SetDamage(0) -- block damage
-		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
-	elseif attacker and attacker:IsPlayer() and attacker:GetPos():WithinAABox(safe[1],safe[2]) then--is the attacker in spawn?
+	local attacker=CTakeDamageInfo:GetInflictor():CPPIGetOwner() and CTakeDamageInfo:GetInflictor():CPPIGetOwner():IsValid() and CTakeDamageInfo:GetInflictor():CPPIGetOwner() or CTakeDamageInfo:GetAttacker()
+	if attacker and attacker:IsValid() and attacker:GetPos():WithinAABox(safe[1],safe[2]) then--is the attacker in spawn?
 		CTakeDamageInfo:SetDamage(0) -- prevent spawn abuse
+		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
+	elseif ply and ply:IsPlayer() and ply:GetPos():WithinAABox(safe[1],safe[2]) then--is the player in spawn?
+		if ply.IsDweller and ply:IsDweller() then return end--no protection for dwellers
+		if ply.IsCuffed and ply:IsCuffed() then return end--no protection for cuffed players either
+		CTakeDamageInfo:SetDamage(0) -- block damage
 		CTakeDamageInfo:SetDamageType(DMG_FALL) -- fall damage doesn't take away armor
 	end
 end)
 hook.Add("HUDPaint","revenants_safezone",function()
-	if LocalPlayer():GetPos():WithinAABox(safe[1],safe[2]) then
-		if true then
+	local ply=LocalPlayer()
+	if ply.IsDweller and ply:IsDweller() then return end--no protection for dwellers
+	if ply.IsCuffed and ply:IsCuffed() then return end--no protection for cuffed players either
+	if ply:GetPos():WithinAABox(safe[1],safe[2]) then
+		if RSP and RSP.Data then
 			local w = ScrW()
 			local h = ScrH()
 			draw.SimpleTextOutlined( "Wolven Territory's Safe Zone", "SafeZoneBig", w/2, 60, Color( 255, 0, 0 ), 1, 1, 2, color_black )

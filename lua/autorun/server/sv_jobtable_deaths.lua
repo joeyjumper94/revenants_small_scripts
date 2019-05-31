@@ -9,6 +9,7 @@ local whitelist={--a list of entities that are allowed to do crush damage
 	cw_40mm_explosive=true,--ar15 grenade
 }
 hook.Add("DoPlayerDeath","jobtable_deaths",function(ply,_,CTakeDamageInfo)
+	if not DarkRP then return end
 	local killer=CTakeDamageInfo:GetAttacker()
 	local weapon=killer.GetActiveWeapon and killer:GetActiveWeapon()
 	if weapon and weapon:IsValid() then
@@ -25,6 +26,7 @@ hook.Add("DoPlayerDeath","jobtable_deaths",function(ply,_,CTakeDamageInfo)
 	if JobTable.demote then
 		ply:teamBan(ply:Team(),JobTable.demote)
 		timer.Simple(0,function()
+			ply:changeTeam(GAMEMODE.DefaultTeam,true)
 			ply:changeTeam(GAMEMODE.DefaultTeam,true)
 		end)
 	end

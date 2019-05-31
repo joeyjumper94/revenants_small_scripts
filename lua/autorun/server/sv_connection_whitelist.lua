@@ -1,27 +1,27 @@
 local example={
 	["SteamID64"]="owner",
-	["SteamID64"]="staffmanager",
+	["SteamID64"]="co-owner",
+	["SteamID64"]="operator",
 	["SteamID64"]="superadmin",
+	["SteamID64"]="head-admin",
 	["SteamID64"]="admin",
-	["SteamID64"]="mod",
-	["SteamID64"]="tmod",
-	["SteamID64"]="helper",
+	["SteamID64"]="moderator",
+	["SteamID64"]="legendary",
+	["SteamID64"]="mega",
+	["SteamID64"]="veteran",
+	["SteamID64"]="vip",
+	["SteamID64"]="trusted",
+	["SteamID64"]="root member",
+	["SteamID64"]="member",
 	["SteamID64"]="user",
 	["SteamID64"]="noaccess",
 }
 local whitelist={
-	["76561198075529998"]="superadmin",--Azhdonv 
-	["76561198149369636"]="staffmanager",--spike
-	["76561198273953632"]="superadmin",--kilper gilgus
-	["76561198141583333"]="superadmin",--Fenix
-	["76561198286150125"]="staffmanager",--pepsi
-	["76561198109245578"]="owner",--hawkren
-	["76561198051306817"]="superadmin",--Revenant Moon
-	["76561198193878353"]="admin",--Mr.Grim
-	["76561198169591129"]="superadmin",--Dom (Anima Vestra)
-	["76561198069995669"]="owner",--Magical
-	["76561198268959284"]="superadmin",--Gimpy
---	["76561198390809362"]="staffmanager", --Lphfghtrs --he quit, and proceeded to crash the US server
+	["76561198051306817"]="operator",--Revenant Moon
+	["76561197963299583"]="owner",--RainbowThunderInfiniteMLP
+	["76561193987039740"]="co-owner",--amber strike
+	["76561198027247892"]="superadmin",--pizza pone
+	["76561193872492992"]="superadmin",--not musical
 }
 concommand.Add("generate_whitelist",function(ply,cmd,args)
 	if game.IsDedicated() then
