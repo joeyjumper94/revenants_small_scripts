@@ -76,9 +76,8 @@ local maps={
 }
 concommand.Add("generate_fastdl",function(ply,cmd,args)
 	if ply and ply:IsValid() and !ply:IsSuperAdmin() then return end
-	local addons=engine.GetAddons()
 	local str=''
-	for k,v in ipairs(addons) do
+	for k,v in ipairs(engine.GetAddons()) do
 		if v.mounted and !blacklist[v.wsid] and !maps[v.wsid] then
 			if v.models==0 then
 				str='	resource.AddWorkshop("'..v.wsid..'") --'..v.title..' '..v.models..' models\n'..str
